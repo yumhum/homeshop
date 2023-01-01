@@ -24,6 +24,7 @@
     </section>
   </main>
   <!-- <button @click="$log(JSON.stringify(items, null, 1))">Log</button> -->
+  <footer id="footer">v0.1 by <a href="https://github.com/humusuck">Humusuck</a></footer>
 </template>
 
 <script setup>
@@ -62,5 +63,11 @@ main {
     flex-direction: column;
     align-items: center;
   }
+}
+
+#footer {
+  position: fixed;
+  bottom: 0;
+  right: 0;
 }
 </style>
