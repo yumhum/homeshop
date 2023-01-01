@@ -1,0 +1,23 @@
+BACKLOG
+
+rewrite to Composition Api OK
+
+
+upd db:
+-Add new item OK
+-Edit item
+-Delete item OK
+-checkbox OK
+-async/await
+-sort array after check OK
+-sorting by categories (diary, veggies...)
+
+-addNewItem to items.js OK
+
+
+live db:
+-firebase OK
+-login
+
+
+
