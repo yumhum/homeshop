@@ -1,6 +1,11 @@
 # HomeShop
 
-This template should help get you started developing with Vue 3 in Vite.
+To-do-list app for shopping. Customized for personal use.
+
+Vite
+Vue 3 (composition API)
+backend Google Firebase v9
+
 
 ## Recommended IDE Setup
 
