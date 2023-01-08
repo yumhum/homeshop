@@ -5,12 +5,15 @@ rewrite to Composition Api OK
 
 upd db:
 -Add new item OK
--Edit item
 -Delete item OK
 -checkbox OK
--async/await
 -sort array after check OK
+-fix Smazat splněné: stays enabled after delete OK
+-priority OK
+-group edit
+-filter (by: priority, time (asc, dsc))
 -sorting by categories (diary, veggies...)
+-Edit item
 
 -addNewItem to items.js OK
 
@@ -18,6 +21,8 @@ upd db:
 live db:
 -firebase OK
 -login
+
+
 
 
 

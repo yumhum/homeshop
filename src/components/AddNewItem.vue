@@ -1,7 +1,10 @@
 <template>
-  <button @click="showAdd" v-show="!showAddItem" id="add-plus">+</button>
-  <form @submit.prevent="itemSubmit" v-show="showAddItem" id="add-new">
-    <input
+  <form
+    @submit.prevent="itemSubmit"
+    @keydown.enter.exact.prevent="itemSubmit"
+    id="add-new"
+  >
+    <textarea
       type="text"
       v-model="newItem"
       placeholder="Přidat novou položku"
@@ -10,49 +13,66 @@
     <button
       type="submit"
       value="Submit"
-      :disabled="newItem.trim().length === 0"
+      :class="{ 'button-disabled': textareaEmpty() }"
+      id="add-button"
     >
-      Přidat
+      +
     </button>
-    <button type="button" @click="showAddItem = false">Zrušit</button>
   </form>
 </template>
 
 <script setup>
-import { ref, nextTick } from "vue";
-
-let showAddItem = ref(false);
-const itemInput = ref(null);
-const showAdd = () => {
-  showAddItem.value = true;
-  nextTick(() => {
-    itemInput.value.focus();
-  });
-};
+import { ref } from "vue";
 
 const emit = defineEmits(["item-submited"]);
 
+const itemInput = ref(null);
 const newItem = ref("");
+const textareaEmpty = () => newItem.value.trim().length === 0;
 
 const itemSubmit = () => {
-  emit("item-submited", newItem.value);
-  newItem.value = "";
+  if (textareaEmpty()) {
+    return;
+  } else {
+    emit("item-submited", newItem.value);
+    newItem.value = "";
+    itemInput.value.focus();
+  }
 };
 </script>
 
 <style lang="scss">
-#add-plus {
-  max-width: 250px;
-  width: 100%;
-}
 #add-new {
-  max-width: 250px;
+  max-width: 267.52px;
+  min-height: 3rem;
   width: 100%;
   display: flex;
-  justify-content: center;
+  margin-top: 0.12rem;
 
-  input {
+  textarea {
     width: 100%;
+    outline: none;
+    text-align: center;
+    border: 1px solid #008cba;
+    border-radius: 0px;
+    resize: none;
+    &:focus {
+      background-color: rgb(222, 243, 255);
+      border: none;
+    }
+  }
+
+  #add-button {
+    min-width: 3rem;
+    background-color: #008cba;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    cursor: pointer;
+
+    &.button-disabled {
+      opacity: 0.5;
+    }
   }
 }
 </style>
