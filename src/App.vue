@@ -35,7 +35,7 @@
   <!-- <button @click="loadFirebaseDb.sortPriority()">Log2</button> -->
   <!-- <button @click="$log(checkStatus())">Log3</button> -->
   <footer id="footer">
-    v0.2 by <a href="https://github.com/humusuck">Humusuck</a>
+    v0.2.1 by <a href="https://github.com/humusuck">Humusuck</a>
   </footer>
 </template>
 
