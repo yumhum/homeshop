@@ -18,7 +18,7 @@
         :itemsLength="(itemsLength = items.length)"
         :priority="item.priority"
         @item-checked="checkClicked(index, item.id)"
-        @item-deleted="deleteClicked(item.id)"
+        @item-deleted="deleteClicked(item.id, item.item)"
         @priorityChanged="changePriority"
       />
 

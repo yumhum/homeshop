@@ -84,7 +84,9 @@ export const checkStatus = () => {
 
 // -delete button clicked
 export const deleteClicked = (id) => {
-  deleteDoc(doc(db, "testList", String(id)));
+  if (confirm("Vymazat položku?")) {
+    deleteDoc(doc(db, "testList", String(id)));
+  }
 };
 
 // -delete all checked items
