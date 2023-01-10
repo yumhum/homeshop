@@ -101,7 +101,7 @@ const priorityChange = () => {
   &.priority-h {
     background-color: rgb(200, 235, 255);
     select {
-      color: red;
+      color: #f44336;
     }
   }
   &.priority-l {
