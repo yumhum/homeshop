@@ -1,6 +1,6 @@
 //ITEM CARD
 //-vue deps
-import { reactive, toRefs, ref, unref } from "vue";
+import { reactive, toRefs, ref, unref, watch } from "vue";
 
 //ext. deps
 import _orderBy from "lodash/orderBy";
@@ -25,25 +25,20 @@ import {
 export const itemsState = reactive({
   items: [],
 });
+
 //items explicit expression
 export const { items } = toRefs(itemsState);
 
-export const loadFirebaseDb = {
+export const loadFirebaseItemsDb = {
   //real-time db && sort
-  sortByPriority: () => {
-    onSnapshot(collection(db, "testList"), (querySnapshot) => {
-      let firebaseItems = [];
-      querySnapshot.forEach((doc) => {
-        let itemsPush = {
-          id: Number(doc.id),
-          item: doc.data().item,
-          check: doc.data().check,
-          checkTime: doc.data().checkTime,
-          priority: doc.data().priority,
-        };
-        firebaseItems.push(itemsPush);
+  sortByPriority: (data) => {
+    const q = query(collection(db, "lists/" + data + "/items"));
+    onSnapshot(q, (querySnap) => {
+      let items = [];
+      querySnap.forEach((doc) => {
+        items.push(doc.data());
       });
-      itemsState.items = firebaseItems;
+      itemsState.items = items;
       itemsState.items = _orderBy(
         itemsState.items,
         ["check", "checkTime", "priority", "id"],
@@ -52,17 +47,19 @@ export const loadFirebaseDb = {
     });
   },
 };
-loadFirebaseDb.sortByPriority()
 
 // FUNCTIONS
+export const routeExport = ref("");
+
 // -add new item
-export const newItemCard = (e) => {
+export const newItemCard = async (e) => {
   let ids = itemsState.items.map((item) => {
     return item.id;
   });
   const maxId = String(ids.length ? Math.max(...ids) + 1 : 1);
-  setDoc(doc(db, "testList", maxId), {
+  await setDoc(doc(db, "lists/" + routeExport.value + "/items", maxId), {
     item: e,
+    id: Number(maxId),
     check: false,
     checkTime: 0,
     priority: 1,
@@ -83,16 +80,21 @@ export const checkStatus = () => {
 };
 
 // -delete button clicked
-export const deleteClicked = (id) => {
+export const deleteClicked = async (id) => {
   if (confirm("Vymazat položku?")) {
-    deleteDoc(doc(db, "testList", String(id)));
+    await deleteDoc(
+      doc(db, "lists/" + routeExport.value + "/items", String(id))
+    );
   }
 };
 
 // -delete all checked items
 export const deleteAllChecked = async () => {
   const batch = writeBatch(db);
-  const q = query(collection(db, "testList"), where("check", "==", true));
+  const q = query(
+    collection(db, "lists/" + routeExport.value + "/items"),
+    where("check", "==", true)
+  );
   const querySnapshot = await getDocs(q);
   querySnapshot.forEach((doc) => {
     batch.delete(doc.ref);
@@ -104,7 +106,7 @@ export const deleteAllChecked = async () => {
 export const deleteAll = async () => {
   if (confirm("Opravdu vymazat všechny položky?")) {
     const batch = writeBatch(db);
-    const q = query(collection(db, "testList"));
+    const q = query(collection(db, "lists/" + routeExport.value + "/items"));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       batch.delete(doc.ref);
@@ -116,12 +118,12 @@ export const deleteAll = async () => {
 // -checkbox button clicked
 export const checkClicked = (index, id) => {
   if (itemsState.items[index].check === false) {
-    updateDoc(doc(db, "testList", String(id)), {
+    updateDoc(doc(db, "lists/" + routeExport.value + "/items", String(id)), {
       check: true,
       checkTime: Date.now(),
     });
   } else {
-    updateDoc(doc(db, "testList", String(id)), {
+    updateDoc(doc(db, "lists/" + routeExport.value + "/items", String(id)), {
       check: false,
       checkTime: 0,
     });
@@ -135,7 +137,7 @@ export const changePriority = (data, id) => {
     : data === "VYSOKÁ"
     ? (data = 2)
     : (data = 0);
-  updateDoc(doc(db, "testList", String(id)), {
+  updateDoc(doc(db, "lists/" + routeExport.value + "/items", String(id)), {
     priority: data,
   });
 };

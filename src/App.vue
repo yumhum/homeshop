@@ -1,38 +1,14 @@
 <template>
   <header><h1>HomeShop</h1></header>
-  <!-- <nav>
-    <RouterLink to="/lists">Lists</RouterLink>
-    <RouterLink to="/login">Login</RouterLink>
-  </nav> -->
 
   <main>
-    <!-- <RouterView></RouterView> -->
-    <section>
-      <p v-if="items.length === 0">Nic tu není. Přidej novou položku.</p>
-      <Item-Card
-        v-for="(item, index) in items"
-        :key="item.id"
-        :id="item.id"
-        :item="item.item"
-        :check="item.check"
-        :itemsLength="(itemsLength = items.length)"
-        :priority="item.priority"
-        @item-checked="checkClicked(index, item.id)"
-        @item-deleted="deleteClicked(item.id, item.item)"
-        @priorityChanged="changePriority"
-      />
-
-      <Add-New-Item @item-submited="newItemCard" />
-      <Delete-Buttons
-        :checkStatus="checkStatus()"
-        :itemsLength="items.length"
-        @deleteCheckedClicked="deleteAllChecked"
-        @deleteAllClicked="deleteAll"
-      />
-    </section>
+    <NavigationPage />
+    <RouterView></RouterView>
+    <!-- <ItemSection /> -->
   </main>
-  <!-- <button @click="$log(JSON.stringify(items, null, 1))">Log</button> -->
-  <!-- <button @click="loadFirebaseDb.sortPriority()">Log2</button> -->
+  <!-- <button @click="$log(user)">Log</button> -->
+  <!-- <button @click="updateProfileName()">Log2</button> -->
+  <!-- <button @click="logout">Logout</button> -->
   <!-- <button @click="$log(checkStatus())">Log3</button> -->
   <footer id="footer">
     v0.2.1 by <a href="https://github.com/humusuck">Humusuck</a>
@@ -40,29 +16,29 @@
 </template>
 
 <script setup>
-//DB served at items-cmd.js
+import { user, logout, updateProfileName } from "@/auth-cmd.js";
 
-// import { RouterLink, RouterView } from 'vue-router'
+//DB served at xxxx-cmd.js
 
 //components
-import ItemCard from "@/components/ItemCard.vue";
-import AddNewItem from "@/components/AddNewItem.vue";
-import DeleteButtons from "@/components/DeleteButtons.vue";
+import NavigationPage from "@/components/NavigationPage.vue";
+import ItemSection from "@/components/items/ItemSection.vue";
 
+import { getAuth } from "firebase/auth";
+
+import { watch } from "vue";
+import {  useRoute } from "vue-router";
 //ITEM data and functions
 import {
-  items,
-  checkClicked,
-  deleteClicked,
-  newItemCard,
-  deleteAllChecked,
-  deleteAll,
-  itemsLength,
-  checkStatus,
-  changePriority,
-  loadFirebaseDb,
+  loadFirebaseItemsDb,
+  routeExport
 } from "@/items-cmd.js";
-import { computed } from "@vue/runtime-core";
+
+const route = useRoute();
+watch(route, (routeIs) => {
+  routeExport.value = route.params.id
+  loadFirebaseItemsDb.sortByPriority(routeIs.params.id);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -79,11 +55,7 @@ main {
   max-width: 375px;
   width: 100%;
 
-  section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+
 }
 
 #footer {

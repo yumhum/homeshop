@@ -41,7 +41,7 @@ const itemSubmit = () => {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 #add-new {
   max-width: 267.52px;
   min-height: 3rem;

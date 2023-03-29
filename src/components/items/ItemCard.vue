@@ -4,7 +4,7 @@
     <div
       class="item-wrap"
       :class="{
-        checked: props.check,
+        'checked': props.check,
         'priority-h': props.priority === 2,
         'priority-l': props.priority === 0,
       }"

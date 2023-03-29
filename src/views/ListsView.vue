@@ -1,17 +1,9 @@
 <template>
-    <div>
-<ul>
-    <li>1</li>
-    <li>2</li>
-    <li>3</li>
-</ul>
-    </div>
+<p>ZÁHADA LISTŮ A SEZNAMŮ</p>
+<ListsAll />
 </template>
 
 <script setup>
-
+defineEmits(['loggedIn'])
+import ListsAll from "@/components/lists/ListsAll.vue";
 </script>
-
-<style lang="scss" scoped>
-
-</style>
