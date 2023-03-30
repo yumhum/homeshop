@@ -12,9 +12,11 @@
     <div v-else>
       <p>User: {{ user.email }}</p>
       <p>User ID: {{ user.uid }}</p>
-      <button @click="copyTextToClipboard()">Zkopírovat User ID do schránky</button>
+      <button @click="copyTextToClipboard()">
+        Zkopírovat User ID do schránky
+      </button>
+      <button @click="logout">Logout</button>
     </div>
-    <button @click="logout">Logout</button>
   </div>
 </template>
 
