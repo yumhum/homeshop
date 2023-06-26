@@ -18,6 +18,7 @@ auth.onAuthStateChanged((currentUser) => {
 export const login = async () => {
   await signInWithEmailAndPassword(auth, email.value, password.value)
     .then((userCredential) => {
+      console.log(userCredential)
       console.log("Login successfull");
       console.log(auth.currentUser);
       router.push("/lists");

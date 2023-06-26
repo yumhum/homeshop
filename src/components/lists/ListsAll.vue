@@ -7,13 +7,15 @@
       <ul>
         <p v-if="userLists.length !== 0">Moje seznamy:</p>
         <li v-for="(list, index) in userLists" :key="list.id">
+          <button @click="flagCmd(list.id, list.flag)">
+            {{ list.flag === false ? "&#9734;" : "&#9733;" }}
+          </button>
           <button @click="ModalCmd.userLists(index)">
             {{ showModal === index ? "Zavřít" : "Upravit" }}
           </button>
-          <router-link
-            :to="{ name: 'list', params: { id: list.id, slug: list.name } }"
-            >{{ list.name }}</router-link
-          >
+          <router-link :to="{ name: 'list', params: { id: list.id } }">
+            {{ list.name }}
+          </router-link>
           <ListModal
             :name="list.name"
             :id="list.id"
@@ -23,13 +25,15 @@
         </li>
         <p v-if="sharedLists.length !== 0">Sdílené seznamy se mnou:</p>
         <li v-for="(list, sharedIndex) in sharedLists" :key="list.id">
+          <button @click="flagCmd(list.id, list.flag)">
+            {{ list.flag === false ? "&#9734;" : "&#9733;" }}
+          </button>
           <button @click="ModalCmd.sharedLists(sharedIndex)">
             {{ showModalShared === sharedIndex ? "Zavřít" : "Info" }}
           </button>
-          <router-link
-            :to="{ name: 'list', params: { id: list.id, slug: list.name } }"
-            >{{ list.name }}</router-link
-          >
+          <router-link :to="{ name: 'list', params: { id: list.id } }">
+            {{ list.name }}
+          </router-link>
           <ListInfo
             :name="list.name"
             :id="list.id"
@@ -38,25 +42,31 @@
           />
         </li>
       </ul>
+      <section>
+        <AddNewList @list-submited="newList" />
+      </section>
     </div>
     <p v-else>
       Pro zobrazení svých seznamů se musíš
-      <router-link to="/login">Přihlásit se.</router-link>.
+      <router-link to="/login">přihlásit</router-link>.
     </p>
-    <section>
-      <AddNewList @list-submited="newList" />
-    </section>
   </div>
 
   <div v-if="user && (listValidation || shareValidation)">
     <ItemSection v-if="route.name === 'list'" />
   </div>
+    <button @click="$log(flaggedList[0].name + flaggedList[0].flag)">Log</button>
+
 </template>
 
 <script setup>
-import { computed, ref } from "vue";
+import {
+  loadFirebaseItemsDb,
+  routeExport
+} from "@/items-cmd.js";
+import { computed, ref, watch } from "vue";
 import { useRoute } from "vue-router";
-import { lists, newList } from "@/lists-cmd.js";
+import { lists, newList, flagCmd, flaggedList } from "@/lists-cmd.js";
 import { user } from "@/auth-cmd.js";
 import ItemSection from "@/components/items/ItemSection.vue";
 import AddNewList from "@/components/lists/AddNewList.vue";
@@ -107,6 +117,11 @@ const updateSharedLists = computed(() => {
 });
 const userLists = ref(updateUserLists);
 const sharedLists = ref(updateSharedLists);
+
+watch(route, (routeIs) => {
+  routeExport.value = route.params.id
+  loadFirebaseItemsDb.sortByPriority(routeIs.params.id);
+});
 </script>
 
 <style lang="scss" scoped>

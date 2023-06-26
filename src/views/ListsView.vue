@@ -4,6 +4,6 @@
 </template>
 
 <script setup>
-defineEmits(['loggedIn'])
+// defineEmits(['loggedIn'])
 import ListsAll from "@/components/lists/ListsAll.vue";
 </script>

@@ -6,10 +6,12 @@
     <RouterView></RouterView>
     <!-- <ItemSection /> -->
   </main>
-  <!-- <button @click="$log(user)">Log</button> -->
-  <!-- <button @click="updateProfileName()">Log2</button> -->
-  <!-- <button @click="logout">Logout</button> -->
+  <!-- <button @click="$log(flaggedList[0].name)">Log</button> -->
+  <!-- <button @click="test">Log2</button> -->
+  <!-- <button @click="flagCmd()">Log3</button> -->
   <!-- <button @click="$log(checkStatus())">Log3</button> -->
+    <!-- <button @click="$log(route.name)">Log</button> -->
+
   <footer id="footer">
     v0.3 by <a href="https://github.com/yumhum">YumHum</a>
   </footer>
@@ -17,8 +19,9 @@
 
 <script setup>
 import { user, logout, updateProfileName } from "@/auth-cmd.js";
+import { } from "@/lists-cmd.js";
 
-//DB served at xxxx-cmd.js
+
 
 //components
 import NavigationPage from "@/components/NavigationPage.vue";
@@ -35,10 +38,7 @@ import {
 } from "@/items-cmd.js";
 
 const route = useRoute();
-watch(route, (routeIs) => {
-  routeExport.value = route.params.id
-  loadFirebaseItemsDb.sortByPriority(routeIs.params.id);
-});
+
 </script>
 
 <style lang="scss" scoped>

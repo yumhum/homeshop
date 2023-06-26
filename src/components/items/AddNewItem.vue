@@ -29,12 +29,13 @@ const emit = defineEmits(["item-submited"]);
 const itemInput = ref(null);
 const newItem = ref("");
 const textareaEmpty = () => newItem.value.trim().length === 0;
+const ttest = "suckiiit"
 
 const itemSubmit = () => {
   if (textareaEmpty()) {
     return;
   } else {
-    emit("item-submited", newItem.value);
+    emit("item-submited", newItem.value, ttest);
     newItem.value = "";
     itemInput.value.focus();
   }

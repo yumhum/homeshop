@@ -20,6 +20,8 @@ import {
   where,
 } from "firebase/firestore";
 
+import { flaggedList } from "@/lists-cmd.js";
+
 //DATA
 //data state
 export const itemsState = reactive({
@@ -49,15 +51,23 @@ export const loadFirebaseItemsDb = {
 };
 
 // FUNCTIONS
-export const routeExport = ref("");
+export const routeExport = ref(null);
+
+const listId = () => {
+  if (routeExport.value) {
+    return routeExport.value
+  } else {
+    return flaggedList.value.id
+  }
+}
 
 // -add new item
-export const newItemCard = async (e) => {
+export const newItemCard = async (e, ttest) => {
   let ids = itemsState.items.map((item) => {
     return item.id;
   });
   const maxId = String(ids.length ? Math.max(...ids) + 1 : 1);
-  await setDoc(doc(db, "lists/" + routeExport.value + "/items", maxId), {
+  await setDoc(doc(db, "lists/" + listId() + "/items", maxId), {
     item: e,
     id: Number(maxId),
     check: false,
@@ -83,7 +93,7 @@ export const checkStatus = () => {
 export const deleteClicked = async (id) => {
   if (confirm("Vymazat položku?")) {
     await deleteDoc(
-      doc(db, "lists/" + routeExport.value + "/items", String(id))
+      doc(db, "lists/" + listId() + "/items", String(id))
     );
   }
 };
@@ -92,7 +102,7 @@ export const deleteClicked = async (id) => {
 export const deleteAllChecked = async () => {
   const batch = writeBatch(db);
   const q = query(
-    collection(db, "lists/" + routeExport.value + "/items"),
+    collection(db, "lists/" + listId() + "/items"),
     where("check", "==", true)
   );
   const querySnapshot = await getDocs(q);
@@ -106,7 +116,7 @@ export const deleteAllChecked = async () => {
 export const deleteAll = async () => {
   if (confirm("Opravdu vymazat všechny položky?")) {
     const batch = writeBatch(db);
-    const q = query(collection(db, "lists/" + routeExport.value + "/items"));
+    const q = query(collection(db, "lists/" + listId() + "/items"));
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       batch.delete(doc.ref);
@@ -118,12 +128,12 @@ export const deleteAll = async () => {
 // -checkbox button clicked
 export const checkClicked = (index, id) => {
   if (itemsState.items[index].check === false) {
-    updateDoc(doc(db, "lists/" + routeExport.value + "/items", String(id)), {
+    updateDoc(doc(db, "lists/" + listId() + "/items", String(id)), {
       check: true,
       checkTime: Date.now(),
     });
   } else {
-    updateDoc(doc(db, "lists/" + routeExport.value + "/items", String(id)), {
+    updateDoc(doc(db, "lists/" + listId() + "/items", String(id)), {
       check: false,
       checkTime: 0,
     });
@@ -137,7 +147,7 @@ export const changePriority = (data, id) => {
     : data === "VYSOKÁ"
     ? (data = 2)
     : (data = 0);
-  updateDoc(doc(db, "lists/" + routeExport.value + "/items", String(id)), {
+  updateDoc(doc(db, "lists/" + listId() + "/items", String(id)), {
     priority: data,
   });
 };

@@ -21,6 +21,7 @@
       @deleteCheckedClicked="deleteAllChecked"
       @deleteAllClicked="deleteAll"
     />
+<!-- <button @click="$log(items)">Log</button> -->
   </section>
 </template>
 
@@ -40,6 +41,7 @@ import {
   checkStatus,
   changePriority,
 } from "@/items-cmd.js";
+
 </script>
 
 <style lang="scss" scoped>

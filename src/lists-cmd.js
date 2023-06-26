@@ -1,5 +1,5 @@
 //vue dep
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 //firestore
 import { db } from "@/firebase";
@@ -62,6 +62,9 @@ export const saveEdit = async (listName, shareUser, owner, id) => {
   } else if (shareUser === owner) {
     alert("Nemůžeš sdílet list s jeho majitelem");
     return;
+  } else if (shareUser.trim().length === 0) {
+    alert("Musíš vyplnit nějaké ID ke sdílení");
+    return;
   } else {
     await updateDoc(doc(db, "lists", id), {
       name: listName,
@@ -85,5 +88,31 @@ export const deleteList = async (id) => {
     } catch (error) {
       console.error("some fuckin error:" + error);
     }
+  }
+};
+
+//zjištění listu s flag
+export const flaggedList = computed(() => {
+  return lists.value.find((list) => list.flag === true);
+});
+
+//flagovani listu (max 1 flag)
+export const flagCmd = async (id, flagStatus) => {
+  if (flaggedList.value) {
+    //nez se flagne kliknuty list, resetne se flag
+    updateDoc(doc(db, "lists", flaggedList.value.id), {
+      flag: false,
+    });
+    //flagnuti listu
+    let flagSwap = !flagStatus;
+    await updateDoc(doc(db, "lists", id), {
+      flag: flagSwap,
+    });
+  } else {
+    //flagnuti listu
+    let flagSwap = !flagStatus;
+    await updateDoc(doc(db, "lists", id), {
+      flag: flagSwap,
+    });
   }
 };
